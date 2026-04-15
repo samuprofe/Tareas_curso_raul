@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    @apply border-brand-800;
+  }
+
+  body {
+    @apply min-h-screen bg-brand-950 text-stone-100 antialiased;
+    background-image:
+      radial-gradient(circle at top, rgba(155, 102, 67, 0.28), transparent 30%),
+      linear-gradient(180deg, rgba(24, 14, 9, 1) 0%, rgba(16, 10, 7, 1) 100%);
+  }
+
+  #root {
+    @apply min-h-screen;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply rounded-3xl border border-white/10 bg-white/5 shadow-warm backdrop-blur-xl;
+  }
+
+  .input-base {
+    @apply w-full rounded-2xl border border-white/10 bg-brand-950/80 px-4 py-3 text-sm text-stone-100 outline-none transition placeholder:text-stone-500 focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30;
+  }
+
+  .label-base {
+    @apply mb-2 block text-sm font-medium text-stone-300;
+  }
+
+  .page-shell {
+    @apply mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-6 lg:px-8;
+  }
+}
+

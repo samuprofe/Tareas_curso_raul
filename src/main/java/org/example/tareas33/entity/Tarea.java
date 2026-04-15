@@ -10,6 +10,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,12 +36,19 @@ public class Tarea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 500)
+    @Column(name = "tarea", nullable = false, length = 500)
     private String texto;
+
+    @Column(name = "texto", nullable = false, length = 500)
+    private String textoLegacy;
 
     @Column(name = "completada", nullable = false)
     @Builder.Default
     private boolean hecha = false;
+
+    @Column(name = "hecha", nullable = false)
+    @Builder.Default
+    private boolean hechaLegacy = false;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
@@ -54,5 +64,20 @@ public class Tarea {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
+
+    @PrePersist
+    @PreUpdate
+    private void syncLegacyState() {
+        this.hechaLegacy = this.hecha;
+        this.textoLegacy = this.texto;
+    }
+
+    @PostLoad
+    private void syncFromDatabase() {
+        this.hecha = this.hecha || this.hechaLegacy;
+        if ((this.texto == null || this.texto.isBlank()) && this.textoLegacy != null) {
+            this.texto = this.textoLegacy;
+        }
+    }
 }
 
